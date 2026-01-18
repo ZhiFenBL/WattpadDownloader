@@ -32,7 +32,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgobject-2.0-0 \
     libcairo2 \
     libfontconfig1 \
-    fonts-dejavu-core \
+    fonts-noto-core \
+    fonts-noto-cjk \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=python-builder /app/.venv /app/.venv
