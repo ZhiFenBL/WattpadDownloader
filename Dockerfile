@@ -39,8 +39,8 @@ COPY --from=frontend-builder /build/build /app/src/build
 
 COPY src/api/ /app/
 
-RUN mkdir -p /usr/share/fonts/custom && \
-    ln -s /app/src/pdf/fonts/* /usr/share/fonts/custom/ 2>/dev/null || true && \
+RUN mkdir -p /tmp/fonts && \
+    ln -s /src/api/src/create_book/generators/pdf/fonts/* /tmp/fonts 2>/dev/null || true && \
     fc-cache -fv
 
 WORKDIR /app/src
