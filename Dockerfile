@@ -44,9 +44,9 @@ COPY --from=frontend-builder /build/build /app/src/build
 COPY src/api/ /app/
 
 RUN mkdir -p /tmp/fonts && \
-    ln -s /src/api/src/create_book/generators/pdf/fonts/* /tmp/fonts 2>/dev/null || true && \
+    ln -s /app/src/create_book/generators/pdf/fonts/* /tmp/fonts 2>/dev/null || true && \
     fc-cache -fv
-
+    
 WORKDIR /app/src
 
 EXPOSE 80
