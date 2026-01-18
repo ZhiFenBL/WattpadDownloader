@@ -5,13 +5,14 @@ RUN npm ci
 COPY src/frontend/. .
 RUN npm run build
 
-FROM python:3.13-slim AS python-builder
+FROM python:3.13-alpine AS python-builder
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+RUN apk add --no-cache \
+    build-base \
     python3-dev \
     git \
-    && rm -rf /var/lib/apt/lists/*
+    libffi-dev \
+    musl-dev
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 COPY src/api/pyproject.toml /app/
 RUN uv sync --no-dev --compile
@@ -20,18 +21,17 @@ FROM python:3.13-alpine
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apk add --no-cache \
     aria2 \
-    libglib2.0-0 \
-    libgobject-2.0-0 \
-    libpango-1.0-0 \
-    libpangoft2-1.0-0 \
-    libcairo2 \
-    libfontconfig1 \
-    fonts-noto-core \
-    fonts-noto-cjk \
-    && rm -rf /var/lib/apt/lists/*
-
+    glib \
+    pango \
+    cairo \
+    libffi \
+    gdk-pixbuf \
+    fontconfig \
+    font-noto \
+    font-noto-cjk
+    
 COPY --from=python-builder /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
@@ -40,9 +40,9 @@ COPY --from=frontend-builder /build/build /app/src/build
 COPY src/api/ /app/
 
 RUN mkdir -p /tmp/fonts && \
-    ln -s /src/api/src/create_book/generators/pdf/fonts/* /tmp/fonts 2>/dev/null || true && \
+    ln -s /app/src/create_book/generators/pdf/fonts/* /tmp/fonts 2>/dev/null || true && \
     fc-cache -fv
-
+    
 WORKDIR /app/src
 
 EXPOSE 80
