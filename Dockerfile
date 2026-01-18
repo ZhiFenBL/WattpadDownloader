@@ -16,7 +16,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 COPY src/api/pyproject.toml /app/
 RUN uv sync --no-dev --compile
 
-FROM python:3.13-slim
+FROM python:3.13-alpine
 
 WORKDIR /app
 
