@@ -39,7 +39,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 COPY --from=frontend-builder /build/build /app/src/build
 
-COPY src/api/ /app/src/
+COPY src/api/ /app/
 
 RUN mkdir -p /tmp/fonts && ln -s /app/src/pdf/fonts/* /tmp/fonts 2>/dev/null || true
 
